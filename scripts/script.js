@@ -5,20 +5,9 @@ document.addEventListener('mousemove', (e) => {
     container.style.transform = `rotateX(${y}deg) rotateY(${x}deg)`;
 });
 
-function typeEffect(element, text, delay = 100) {
-    let i = 0;
-    element.innerHTML = '';
-    const interval = setInterval(() => {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-        } else {
-            clearInterval(interval);
-            setTimeout(() => {
-                changeFontLetterByLetter(element, ['Beograd', 'LAKOSHEN', 'SAIBA'], 500);
-            }, 1000);
-        }
-    }, delay);
+function typeEffect(element, text) {
+    element.innerHTML = text.split('').map(char => `<span>${char}</span>`).join('');
+    changeFontLetterByLetter(element, ['LovecraftsDiary', 'Beograd', 'LAKOSHEN', 'SAIBA'], 100);
 }
 
 function changeFontLetterByLetter(element, fonts, delay = 500) {
@@ -44,7 +33,7 @@ function animateLinks() {
     links.forEach((link, index) => {
         setTimeout(() => {
             link.innerHTML = ''; // Effacer le texte avant de réécrire
-            typeEffect(link, link.getAttribute('data-text'), 100);
+            typeEffect(link, link.getAttribute('data-text'));
         }, index * 5000);
     });
 }
@@ -59,7 +48,7 @@ function startAnimation() {
             setTimeout(() => {
                 link.style.opacity = 1;
                 link.innerHTML = ''; // Effacer le texte avant de réécrire
-                typeEffect(link, link.getAttribute('data-text'), 100);
+                typeEffect(link, link.getAttribute('data-text'));
             }, 500);
         });
     }, 6000);
