@@ -70,3 +70,36 @@ function animateLinks() {
 }
 
 setInterval(animateLinks, 22000);
+
+window.onSpotifyWebPlaybackSDKReady = () => {
+    const token = 'BQCOsbRxEDIPLQ6u1sEX5iX7csIOEdG-Atiy-8n6TfukKvGVtUc6gOiZrWwLh1zr61dAvritw5w_lPK-0BEw1rL9fg-BMvcHxVgNxsDll-2S1l1gPVY';
+    const player = new Spotify.Player({
+        name: 'Web Playback SDK Quick Start Player',
+        getOAuthToken: cb => { cb(token); },
+        volume: 0.5
+    });
+
+    // Ready
+    player.addListener('ready', ({ device_id }) => {
+        console.log('Ready with Device ID', device_id);
+        play(device_id);
+    });
+
+    // Not Ready
+    player.addListener('not_ready', ({ device_id }) => {
+        console.log('Device ID has gone offline', device_id);
+    });
+
+    player.connect();
+
+    function play(device_id) {
+        fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
+            method: 'PUT',
+            body: JSON.stringify({ uris: ['spotify:track:6NIlK8Ql5HUMBoft4AMnTl'] }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+    }
+};
