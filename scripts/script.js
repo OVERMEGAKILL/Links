@@ -56,7 +56,7 @@ function translateFonts(element, fonts, delay) {
 }
 
 function animateLinks() {
-    const links = document.querySelectorAll('.link');
+    const links = document.querySelectorAll('.link, .glitch');
     links.forEach((link, index) => {
         setTimeout(() => {
             link.innerHTML = '';
