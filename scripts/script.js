@@ -58,9 +58,13 @@ window.onload = startAnimation;
 
 const clientId = '528c7223a2804283875c10eb04e5d625';
 const clientSecret = '23d1459807e644528ae2abecfe2d1e44';
-let token = '';
+const redirectUri = 'https://overmegakill.github.io/Links/';
+const scopes = 'user-modify-playback-state';
 
-async function getToken() {
+const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(scopes)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+window.location.href = authUrl;
+
+async function getAccessToken(code) {
     const response = await fetch('https://accounts.spotify.com/api/token', {
         method: 'POST',
         headers: {
@@ -68,16 +72,25 @@ async function getToken() {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: new URLSearchParams({
-            'grant_type': 'client_credentials'
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': redirectUri
         })
     });
     const data = await response.json();
-    token = data.access_token;
-    console.log('New token obtained:', token);
+    return data.access_token;
 }
 
-async function initializePlayer() {
-    await getToken();
+const urlParams = new URLSearchParams(window.location.search);
+const code = urlParams.get('code');
+if (code) {
+    getAccessToken(code).then(token => {
+        console.log('Access token:', token);
+        initializePlayer(token);
+    });
+}
+
+async function initializePlayer(token) {
     const player = new Spotify.Player({
         name: 'Web Playback SDK Quick Start Player',
         getOAuthToken: cb => { cb(token); },
@@ -105,9 +118,4 @@ async function initializePlayer() {
             },
         });
     }
-
-    // Renew token every 50 minutes
-    setInterval(getToken, 50 * 60 * 1000);
 }
-
-window.onSpotifyWebPlaybackSDKReady = initializePlayer;
