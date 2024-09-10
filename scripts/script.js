@@ -59,7 +59,7 @@ function animateLinks() {
     const links = document.querySelectorAll('.link, .glitch');
     links.forEach((link, index) => {
         setTimeout(() => {
-            link.innerHTML = '';
+            link.innerHTML = ''; // Effacer le texte avant de réécrire
             typeEffect(link, link.getAttribute('data-text'), 100);
             setTimeout(() => {
                 const fonts = ['LovecraftsDiary', 'Beograd', 'LAKOSHEN', 'SAIBA'];
