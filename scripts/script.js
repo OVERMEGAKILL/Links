@@ -67,7 +67,9 @@ async function getToken() {
             'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret),
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: 'grant_type=client_credentials&scope=user-modify-playback-state'
+        body: new URLSearchParams({
+            'grant_type': 'client_credentials'
+        })
     });
     const data = await response.json();
     token = data.access_token;
