@@ -57,7 +57,7 @@ function startAnimation() {
 window.onload = startAnimation;
 
 window.onSpotifyWebPlaybackSDKReady = () => {
-    const token = 'BQCOsbRxEDIPLQ6u1sEX5iX7csIOEdG-Atiy-8n6TfukKvGVtUc6gOiZrWwLh1zr61dAvritw5w_lPK-0BEw1rL9fg-BMvcHxVgNxsDll-2S1l1gPVY';
+    const token = 'BQAJHFm6DfpuEvmXjb3Bw_bG-RoRs3-BKlfvDW78Zt6TAaA4Waq0MVQ6h57KUabtv48_0-DF0ytsKIgKy8lDerBfOjqfmWoGnf6oyr2ChBwENCyixD8';
     const player = new Spotify.Player({
         name: 'Web Playback SDK Quick Start Player',
         getOAuthToken: cb => { cb(token); },
