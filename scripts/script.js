@@ -14,30 +14,14 @@ function typeEffect(element, text, delay = 100) {
             i++;
         } else {
             clearInterval(interval);
-        }
-    }, delay);
-}
-
-function changeFontLetterByLetter(element, fonts, delay = 500) {
-    const text = element.getAttribute('data-text');
-    let i = 0;
-    const interval = setInterval(() => {
-        if (i < text.length) {
-            const span = document.createElement('span');
-            span.textContent = text.charAt(i);
-            span.style.fontFamily = fonts[0];
-            element.appendChild(span);
-            i++;
-        } else {
-            clearInterval(interval);
             setTimeout(() => {
-                translateFonts(element, fonts.slice(1), delay);
+                changeFontLetterByLetter(element, ['Beograd', 'LAKOSHEN', 'SAIBA'], 500);
             }, 1000);
         }
     }, delay);
 }
 
-function translateFonts(element, fonts, delay) {
+function changeFontLetterByLetter(element, fonts, delay = 500) {
     const spans = element.querySelectorAll('span');
     let i = 0;
     const interval = setInterval(() => {
@@ -48,7 +32,7 @@ function translateFonts(element, fonts, delay) {
             clearInterval(interval);
             if (fonts.length > 1) {
                 setTimeout(() => {
-                    translateFonts(element, fonts.slice(1), delay);
+                    changeFontLetterByLetter(element, fonts.slice(1), delay);
                 }, 1000);
             }
         }
@@ -61,15 +45,27 @@ function animateLinks() {
         setTimeout(() => {
             link.innerHTML = ''; // Effacer le texte avant de réécrire
             typeEffect(link, link.getAttribute('data-text'), 100);
-            setTimeout(() => {
-                const fonts = ['LovecraftsDiary', 'Beograd', 'LAKOSHEN', 'SAIBA'];
-                changeFontLetterByLetter(link, fonts, 500);
-            }, 1000);
         }, index * 5000);
     });
 }
 
-setInterval(animateLinks, 22000);
+function startAnimation() {
+    animateLinks();
+    setInterval(() => {
+        const links = document.querySelectorAll('.link, .glitch');
+        links.forEach(link => {
+            link.style.transition = 'opacity 0.5s';
+            link.style.opacity = 0;
+            setTimeout(() => {
+                link.style.opacity = 1;
+                link.innerHTML = ''; // Effacer le texte avant de réécrire
+                typeEffect(link, link.getAttribute('data-text'), 100);
+            }, 500);
+        });
+    }, 6000);
+}
+
+window.onload = startAnimation;
 
 window.onSpotifyWebPlaybackSDKReady = () => {
     const token = 'BQCOsbRxEDIPLQ6u1sEX5iX7csIOEdG-Atiy-8n6TfukKvGVtUc6gOiZrWwLh1zr61dAvritw5w_lPK-0BEw1rL9fg-BMvcHxVgNxsDll-2S1l1gPVY';
