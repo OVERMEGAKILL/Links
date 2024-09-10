@@ -18,34 +18,55 @@ function typeEffect(element, text, delay = 100) {
     }, delay);
 }
 
-function translateEffect(element, texts, delay = 100) {
+function changeFontLetterByLetter(element, fonts, delay = 500) {
+    const text = element.getAttribute('data-text');
     let i = 0;
     const interval = setInterval(() => {
-        if (i < texts.length) {
-            element.innerHTML = texts[i];
+        if (i < text.length) {
+            const span = document.createElement('span');
+            span.textContent = text.charAt(i);
+            span.style.fontFamily = fonts[0];
+            element.appendChild(span);
             i++;
         } else {
             clearInterval(interval);
+            setTimeout(() => {
+                translateFonts(element, fonts.slice(1), delay);
+            }, 1000);
+        }
+    }, delay);
+}
+
+function translateFonts(element, fonts, delay) {
+    const spans = element.querySelectorAll('span');
+    let i = 0;
+    const interval = setInterval(() => {
+        if (i < spans.length) {
+            spans[i].style.fontFamily = fonts[0];
+            i++;
+        } else {
+            clearInterval(interval);
+            if (fonts.length > 1) {
+                setTimeout(() => {
+                    translateFonts(element, fonts.slice(1), delay);
+                }, 1000);
+            }
         }
     }, delay);
 }
 
 function animateLinks() {
     const links = document.querySelectorAll('.link');
-    const terminal = document.querySelector('.terminal');
-    terminal.style.display = 'block';
     links.forEach((link, index) => {
         setTimeout(() => {
-            const alienText = '⟟⟊⟟⟊⟟⟊';
-            const cyrillicText = 'Пример';
-            const japaneseText = '例';
-            const latinText = link.getAttribute('data-text');
-            typeEffect(terminal, alienText, 100);
+            link.innerHTML = '';
+            typeEffect(link, link.getAttribute('data-text'), 100);
             setTimeout(() => {
-                translateEffect(terminal, [alienText, cyrillicText, japaneseText, latinText], 500);
+                const fonts = ['LovecraftsDiary', 'Beograd', 'LAKOSHEN', 'SAIBA'];
+                changeFontLetterByLetter(link, fonts, 500);
             }, 1000);
         }, index * 5000);
     });
 }
 
-setInterval(animateLinks, 15000);
+setInterval(animateLinks, 22000);
