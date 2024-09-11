@@ -57,39 +57,11 @@ function startAnimation() {
 
 window.onload = startAnimation;
 
-const clientId = '528c7223a2804283875c10eb04e5d625';
-const clientSecret = '23d1459807e644528ae2abecfe2d1e44';
-const redirectUri = 'https://overmegakill.github.io/Links/';
-const scopes = 'user-modify-playback-state';
-
 const urlParams = new URLSearchParams(window.location.search);
-const code = urlParams.get('code');
+const token = urlParams.get('token');
 
-if (!code) {
-    const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(scopes)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
-    window.location.href = authUrl;
-} else {
-    getAccessToken(code).then(token => {
-        console.log('Access token:', token);
-        initializePlayer(token);
-    });
-}
-
-async function getAccessToken(code) {
-    const response = await fetch('https://accounts.spotify.com/api/token', {
-        method: 'POST',
-        headers: {
-            'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret),
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-            'grant_type': 'authorization_code',
-            'code': code,
-            'redirect_uri': redirectUri
-        })
-    });
-    const data = await response.json();
-    return data.access_token;
+if (token) {
+    initializePlayer(token);
 }
 
 async function initializePlayer(token) {
