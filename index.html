@@ -3,22 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OVER Linktree</title>
-    <link rel="stylesheet" href="styles/style.css">
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.23/build/spline-viewer.js"></script>
+    <title>Authentification Spotify</title>
 </head>
 <body>
-    <spline-viewer url="https://prod.spline.design/vSjXie5Vy82tcP3s/scene.splinecode"></spline-viewer>
-    <div class="container">
-        <h1 class="glitch" data-text="LINKS"></h1>
-        <div class="links">
-            <a href="https://votre-lien-1.com" class="link" data-text="Lien 1"></a>
-            <a href="https://votre-lien-2.com" class="link" data-text="Lien 2"></a>
-            <a href="https://votre-lien-3.com" class="link" data-text="Lien 3"></a>
-        </div>
-    </div>
-    <div id="spotify-player"></div>
-    <script src="https://sdk.scdn.co/spotify-player.js"></script>
-    <script src="scripts/script.js"></script>
+    <script>
+        const clientId = '528c7223a2804283875c10eb04e5d625';
+        const clientSecret = '23d1459807e644528ae2abecfe2d1e44';
+        const redirectUri = 'https://overmegakill.github.io/Links/auth.html';
+        const scopes = 'user-modify-playback-state';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (!code) {
+            const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(scopes)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+            window.location.href = authUrl;
+        } else {
+            getAccessToken(code).then(token => {
+                console.log('Access token:', token);
+                window.location.href = `https://overmegakill.github.io/Links/?token=${token}`;
+            });
+        }
+
+        async function getAccessToken(code) {
+            const response = await fetch('https://accounts.spotify.com/api/token', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret),
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'grant_type': 'authorization_code',
+                    'code': code,
+                    'redirect_uri': redirectUri
+                })
+            });
+            const data = await response.json();
+            return data.access_token;
+        }
+    </script>
 </body>
 </html>
