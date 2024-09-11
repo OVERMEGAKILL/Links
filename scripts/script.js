@@ -31,6 +31,7 @@ function changeFontLetterByLetter(element, fonts, delay = 300) {
 function animateLinks() {
     const links = document.querySelectorAll('.link, .glitch');
     links.forEach((link, index) => {
+        link.innerHTML = link.getAttribute('data-text'); // Afficher le texte initialement
         setTimeout(() => {
             link.innerHTML = ''; // Effacer le texte avant de réécrire
             typeEffect(link, link.getAttribute('data-text'));
@@ -61,8 +62,18 @@ const clientSecret = '23d1459807e644528ae2abecfe2d1e44';
 const redirectUri = 'https://overmegakill.github.io/Links/';
 const scopes = 'user-modify-playback-state';
 
-const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(scopes)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
-window.location.href = authUrl;
+const urlParams = new URLSearchParams(window.location.search);
+const code = urlParams.get('code');
+
+if (!code) {
+    const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(scopes)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+    window.location.href = authUrl;
+} else {
+    getAccessToken(code).then(token => {
+        console.log('Access token:', token);
+        initializePlayer(token);
+    });
+}
 
 async function getAccessToken(code) {
     const response = await fetch('https://accounts.spotify.com/api/token', {
@@ -79,15 +90,6 @@ async function getAccessToken(code) {
     });
     const data = await response.json();
     return data.access_token;
-}
-
-const urlParams = new URLSearchParams(window.location.search);
-const code = urlParams.get('code');
-if (code) {
-    getAccessToken(code).then(token => {
-        console.log('Access token:', token);
-        initializePlayer(token);
-    });
 }
 
 async function initializePlayer(token) {
